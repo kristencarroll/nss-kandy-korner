@@ -23,7 +23,7 @@ export const ProductList = () => {
                     (product) => {
                         return <div key={`product==${product.id}`}>
                             <p>{product.name} costs {product.price} 
-                            and is {product.productType.name} </p>
+                            and is {product.productType.type} </p>
                         </div>
                     }
                 )
