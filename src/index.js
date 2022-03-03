@@ -2,11 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { KandyKorner }from './components/KandyKorner';
+import { BrowserRouter } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
 
+
+//importing BrowserRouter and wrapping KandyKorner in it has enabled routing
+//for the entire application
 ReactDOM.render(
   <React.StrictMode>
-    <KandyKorner />
+    <BrowserRouter>
+      <KandyKorner />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
