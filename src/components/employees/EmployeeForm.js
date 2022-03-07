@@ -1,5 +1,7 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
+
+
 
 //export and define a function that creates a hiring form for a 
 //new employee
@@ -8,14 +10,27 @@ export const EmployeeForm =() => {
     //name-string, manager false, fullTime false, hourly rate string
     const [employee, setEmployee] = useState({
         name: "",
-        locationId: "",
+        locationId: 0,
         manager: false,
         fullTime: false,
-        hourlyRate: ""
+        hourlyRate: "",
     })
     //import and set a variable to useHistory to route back to the /employees 
     //url once the form is submitted
     const history = useHistory()
+    
+    const [locations, setLocations] = useState([])
+    
+    useEffect(
+        () => {
+            fetch("http://localhost:8088/locations")
+                .then(res => res.json())
+                .then((locationArray) => {
+                    setLocations(locationArray)
+                })
+        },
+        []
+    )
 
     //define a submitEmployee function that runs when the "hire employee"
     //button is clicked 
@@ -28,7 +43,7 @@ export const EmployeeForm =() => {
             locationId: employee.locationId,
             manager: employee.manager,
             fullTime: employee.fullTime,
-            hourlyRate: employee.hourlyRate
+            hourlyRate: employee.hourlyRate,
         }
 
         const fetchOption = {
@@ -39,7 +54,7 @@ export const EmployeeForm =() => {
             body: JSON.stringify(newEmployee)
         }
 
-        return fetch("http://localhost:8088/employees", fetchOption)
+        return fetch("http://localhost:8088/employees?_expand=location", fetchOption)
         .then(() => {
             history.push("/employees")
         })
@@ -71,19 +86,29 @@ export const EmployeeForm =() => {
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="location">Store Location:</label>
-                    <input
+                    <select id="location" className="form-control"
+                    
                         onChange={
                             (event) => {
                                 const copy = {...employee}
-                                copy.locationId = event.target.value
+                                //if (event.target.id === employee.locationId) {
+                                copy.locationId = parseInt(event.target.value)
                                 setEmployee(copy)
+                               // }
                             }
                         }
                         required autoFocus
-                        type="text" id="location"
-                        className="form-control"
-                        placeholder="Store Location"
-                        />
+                        placeholder="Store Location">
+                    
+                        <option value="0">Select Location</option>
+                            
+                            {locations.map((location) => {
+                            return <option value={location.id}>{location.town}</option>
+
+                        })}
+                        
+                        
+                    </select>
                 </div>
             </fieldset>
             <fieldset>
